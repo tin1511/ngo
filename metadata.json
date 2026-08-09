@@ -1,0 +1,6 @@
+{
+  "name": "Mộc Điêu - Khắc Gỗ & Móc Khóa Theo Yêu Cầu",
+  "description": "Xưởng chế tác và phân phối móc khóa gỗ, tranh/ảnh chân dung khắc gỗ laser, thước gỗ, quà tặng khắc tên và thông điệp cá nhân hóa theo yêu cầu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

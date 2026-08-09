@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "products": {
+      "title": "Products",
+      "description": "Store products for the e-commerce store",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "shortDesc": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "oldPrice": { "type": "number" },
+        "category": { "type": "string" },
+        "region": { "type": "string" },
+        "village": { "type": "string" },
+        "province": { "type": "string" },
+        "emoji": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "badge": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "inStock": { "type": "boolean" },
+        "artisanQuote": {
+          "type": "object",
+          "properties": {
+            "author": { "type": "string" },
+            "quote": { "type": "string" }
+          }
+        },
+        "features": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "price", "category", "inStock"]
+    },
+    "users": {
+      "title": "Users",
+      "description": "User accounts",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "password": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "avatar": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["username", "password", "name", "role"]
+    },
+    "login_logs": {
+      "title": "Login Logs",
+      "description": "System security logs for user logins",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "username": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "status": { "type": "string" },
+        "device": { "type": "string" }
+      },
+      "required": ["id", "username", "timestamp", "status"]
+    },
+    "orders": {
+      "title": "Orders",
+      "description": "Customer purchase orders",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "customerAddress": { "type": "string" },
+        "subtotal": { "type": "number" },
+        "total": { "type": "number" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "customerName", "customerPhone", "customerAddress", "total", "status", "createdAt"]
+    }
+  }
+}
