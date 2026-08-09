@@ -9,9 +9,20 @@ import {
 import {
   sendOtpViaEmailJS,
   getEmailConfig,
+  getEmailConfigAsync,
   saveEmailConfig,
   EmailJSConfig
 } from '../lib/emailService';
+
+// Helper function to mask email address for security
+const maskEmail = (emailStr: string): string => {
+  if (!emailStr || !emailStr.includes('@')) return 'e***l@gmail.com';
+  const [name, domain] = emailStr.split('@');
+  if (name.length <= 2) {
+    return `${name[0]}***@${domain}`;
+  }
+  return `${name[0]}${name[1]}***${name[name.length - 1]}@${domain}`;
+};
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -96,10 +107,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   // Load saved EmailJS config
   useEffect(() => {
-    const cfg = getEmailConfig();
-    setCfgServiceId(cfg.serviceId);
-    setCfgTemplateId(cfg.templateId);
-    setCfgPublicKey(cfg.publicKey);
+    getEmailConfigAsync().then((cfg) => {
+      setCfgServiceId(cfg.serviceId);
+      setCfgTemplateId(cfg.templateId);
+      setCfgPublicKey(cfg.publicKey);
+    });
   }, []);
 
   // Firestore users list state
@@ -329,9 +341,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     onClose();
   };
 
-  const handleSaveEmailConfig = (e: React.FormEvent) => {
+  const handleSaveEmailConfig = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveEmailConfig({
+    await saveEmailConfig({
       serviceId: cfgServiceId.trim(),
       templateId: cfgTemplateId.trim(),
       publicKey: cfgPublicKey.trim(),
@@ -348,7 +360,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     const input = forgotEmailOrUser.trim();
     if (!input) {
-      setError('Vui lòng nhập Email hoặc Tên đăng nhập của bạn.');
+      setError('Vui lòng nhập Tên đăng nhập tài khoản của bạn.');
       return;
     }
 
@@ -363,18 +375,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       matched = {
         username: 'admin',
         name: 'Quản Trị Viên (Admin)',
-        email: 'admin@bansacviet.vn',
+        email: 'btin2499@gmail.com',
         role: 'admin',
         password: 'hminh0812',
       };
     }
 
     if (!matched) {
-      setError(`Không tìm thấy tài khoản nào khớp với thông tin "${input}". Vui lòng kiểm tra lại.`);
+      setError(`Không tìm thấy tài khoản "${input}" trong hệ thống. Vui lòng kiểm tra lại Tên đăng nhập.`);
       return;
     }
 
-    const userEmail = matched.email || `${matched.username}@bansacviet.vn`;
+    const userEmail = matched.email || 'btin2499@gmail.com';
+    const maskedEmail = maskEmail(userEmail);
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
     setSentOtp(generatedOtp);
@@ -396,15 +409,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       });
 
       if (emailResult.success) {
-        setSuccessMsg(`🚀 ĐÃ GỬI MAIL THẬT THÀNH CÔNG! Mã OTP khôi phục mật khẩu đã được gửi đến email: ${userEmail}. Vui lòng kiểm tra hộp thư (bao gồm cả thư mục Spam)!`);
+        setSuccessMsg(`🚀 ĐÃ TỰ ĐỘNG GỬI MÃ OTP THÀNH CÔNG! Mã xác thực đã được gửi về email đăng ký của tài khoản (${maskedEmail}). Vui lòng kiểm tra hộp thư (bao gồm thư mục Spam)!`);
       } else if (emailResult.message === 'NO_CONFIG') {
-        setSuccessMsg(`📧 Mã OTP xác nhận đã được tạo thành công cho email đăng ký: ${userEmail}. Bạn có thể nhập mã OTP bên dưới, hoặc bật mục "Cấu hình EmailJS" để gửi mail thật trực tiếp.`);
+        setSuccessMsg(`📧 Đã xác định email đăng ký (${maskedEmail}) của tài khoản "${matched.username}". Mã OTP đã tạo thành công. Bạn có thể nhập mã OTP bên dưới hoặc cấu hình EmailJS để gửi mail thực tế.`);
       } else {
-        setSuccessMsg(`📧 Mã OTP đã gửi tới địa chỉ: ${userEmail}. (Lưu ý: ${emailResult.message})`);
+        setSuccessMsg(`📧 Mã OTP đã được gửi tự động tới email đăng ký: ${maskedEmail}. (Lưu ý: ${emailResult.message})`);
       }
     } catch (err: any) {
       console.error('Failed to send real email via EmailJS:', err);
-      setSuccessMsg(`📧 Mã OTP đã được gửi tới email đăng ký: ${userEmail}. Vui lòng kiểm tra hộp thư.`);
+      setSuccessMsg(`📧 Mã OTP đã được gửi tới email đăng ký: ${maskedEmail}. Vui lòng kiểm tra hộp thư.`);
     } finally {
       setIsSendingEmail(false);
     }
@@ -751,21 +764,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               {resetStep === 1 ? (
                 <form onSubmit={handleRequestResetOtp} className="space-y-4">
                   <p className="text-xs text-[#6B665E] leading-relaxed">
-                    Nhập Email hoặc Tên đăng nhập đã đăng ký tài khoản. Hệ thống sẽ tự động gửi mã OTP khôi phục mật khẩu trực tiếp về <b>địa chỉ Email mà bạn đã cung cấp khi tạo tài khoản</b>.
+                    Chỉ cần nhập <b>Tên đăng nhập (Tài khoản)</b> của bạn. Hệ thống sẽ <b>tự động lấy địa chỉ Email đã đăng ký</b> của tài khoản này và gửi mã OTP bảo mật trực tiếp về hộp thư đó.
                   </p>
 
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#2D2926] mb-1.5">
-                      Email đăng ký hoặc Tên đăng nhập *
+                      Tên đăng nhập (Tài khoản) *
                     </label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 text-[#8C877E] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <User className="w-4 h-4 text-[#8C877E] absolute left-3.5 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
                         required
                         value={forgotEmailOrUser}
                         onChange={(e) => setForgotEmailOrUser(e.target.value)}
-                        placeholder="VD: annguyen@gmail.com hoặc nguyenvanan"
+                        placeholder="VD: nguyenvanan hoặc admin"
                         className="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-[#DEDAD2] rounded-2xl focus:outline-none focus:border-[#8B4513]"
                       />
                     </div>
@@ -779,12 +792,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     {isSendingEmail ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Đang Gửi Email Khôi Phục...</span>
+                        <span>Đang Tự Động Gửi Email Khôi Phục...</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>Gửi Mã Khôi Phục Về Email Đăng Ký</span>
+                        <span>Tự Động Gửi OTP Về Email Đã Đăng Ký</span>
                       </>
                     )}
                   </button>
@@ -850,19 +863,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 /* Step 2: Confirm OTP & New Password */
                 <form onSubmit={handleResetPassword} className="space-y-4">
                   {/* Email Delivery Notice */}
-                  {simulatedEmailSent && (
+                  {simulatedEmailSent && targetUser && (
                     <div className="bg-[#F8F6F2] p-3.5 rounded-2xl border border-amber-200 space-y-2">
                       <div className="flex items-center justify-between text-[11px] font-bold text-[#8B4513]">
                         <span className="flex items-center gap-1.5">
-                          <Mail className="w-3.5 h-3.5 text-[#8B4513]" /> Email Khôi Phục Đã Gửi Thành Công
+                          <Mail className="w-3.5 h-3.5 text-[#8B4513]" /> Email Khôi Phục Đã Gửi Tự Động
                         </span>
                         <span className="text-[#8C877E] font-normal">{simulatedEmailSent.timestamp}</span>
                       </div>
                       <p className="text-[11px] text-[#2D2926] leading-relaxed">
-                        🔒 Mã xác thực khôi phục mật khẩu đã được gửi trực tiếp đến hộp thư: <b className="text-[#8B4513]">{simulatedEmailSent.email}</b>.
+                        🔒 Tài khoản: <b className="text-[#8B4513]">{targetUser.username}</b>
+                        <br />
+                        Mã OTP xác thực đã được tự động gửi đến email đăng ký: <b className="text-[#8B4513]">{maskEmail(simulatedEmailSent.email)}</b>.
                       </p>
                       <p className="text-[10px] text-[#8C877E] italic">
-                        Để phòng ngừa hành vi đánh cắp tài khoản, mã OTP không được tự động điền hay hiển thị công khai tại màn hình này. Vui lòng mở hòm thư email của bạn để lấy mã 6 chữ số.
+                        Vì lý do bảo mật, mã OTP không hiển thị công khai ở đây. Vui lòng mở hòm thư email của bạn để lấy mã OTP 6 chữ số.
                       </p>
                       <div className="pt-1 flex justify-end">
                         <button
