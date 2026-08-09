@@ -188,7 +188,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Rating */}
             <div className="flex items-center justify-between text-xs text-[#6B665E] mb-2">
               <span className="inline-flex items-center gap-1 font-semibold text-[#8B4513] uppercase text-[11px] tracking-wider">
-                ✨ Mộc Điêu Premium
+                ✨ Ngộ Premium
               </span>
               <div className="flex items-center gap-1 text-[#8B4513] font-bold">
                 <Star className="w-4 h-4 fill-current" />
