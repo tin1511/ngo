@@ -43,7 +43,7 @@ import {
 import { Star, MessageSquare } from 'lucide-react';
 import { Product, REGIONS_INFO, CATEGORIES_INFO } from '../data/products';
 import { UserAccount, FooterConfig, DEFAULT_FOOTER_CONFIG, HeaderConfig, DEFAULT_HEADER_CONFIG, ShippingConfig, DEFAULT_SHIPPING_CONFIG, Order, OrderStatus, Voucher, DEFAULT_VOUCHERS, ProductReview } from '../types/auth';
-import { getEmailConfig, saveEmailConfig, sendOrderNotificationToAdmin } from '../lib/emailService';
+import { getEmailConfig, getEmailConfigAsync, saveEmailConfig, sendOrderNotificationToAdmin } from '../lib/emailService';
 
 interface AdminDashboardModalProps {
   isOpen: boolean;
@@ -114,11 +114,12 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
   const [isSendingTestMail, setIsSendingTestMail] = useState(false);
 
   React.useEffect(() => {
-    const cfg = getEmailConfig();
-    setAdminEmail(cfg.adminEmail || 'btin2499@gmail.com');
-    setEmailServiceId(cfg.serviceId || '');
-    setEmailTemplateId(cfg.templateId || '');
-    setEmailPublicKey(cfg.publicKey || '');
+    getEmailConfigAsync().then((cfg) => {
+      setAdminEmail(cfg.adminEmail || 'btin2499@gmail.com');
+      setEmailServiceId(cfg.serviceId || '');
+      setEmailTemplateId(cfg.templateId || '');
+      setEmailPublicKey(cfg.publicKey || '');
+    });
   }, []);
 
   // Vouchers state
