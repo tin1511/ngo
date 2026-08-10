@@ -112,21 +112,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#2D2926]/70 backdrop-blur-sm animate-fadeIn">
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] bg-[#FDFBF7] rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-[#EAE7E2]"
+        className="relative w-full max-w-4xl max-h-[92vh] sm:max-h-[90vh] bg-[#FDFBF7] rounded-2xl sm:rounded-3xl overflow-y-auto md:overflow-hidden shadow-2xl flex flex-col md:flex-row border border-[#EAE7E2]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-[#2D2926] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 hover:bg-white text-[#2D2926] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Left column: Image / Video showcase */}
-        <div className="md:w-1/2 relative bg-[#F0EDE9] flex flex-col items-center justify-center p-6 sm:p-8">
+        <div className="md:w-1/2 relative bg-[#F0EDE9] flex flex-col items-center justify-center p-3 sm:p-6 md:p-8 shrink-0">
           {isPlayingVideo ? (
-            <div className="w-full h-72 sm:h-96 md:h-full bg-black rounded-2xl overflow-hidden relative shadow-lg flex items-center justify-center">
+            <div className="w-full h-48 sm:h-64 md:h-full min-h-[200px] bg-black rounded-2xl overflow-hidden relative shadow-lg flex items-center justify-center">
               <video
                 src={demoVideoUrl}
                 controls
@@ -144,7 +144,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </button>
             </div>
           ) : (
-            <div className="relative w-full h-72 sm:h-96 md:h-full group rounded-2xl overflow-hidden shadow-lg">
+            <div className="relative w-full h-48 sm:h-64 md:h-full min-h-[200px] group rounded-2xl overflow-hidden shadow-lg">
               <img
                 src={product.imageUrl}
                 alt={product.name}
@@ -154,27 +154,27 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {/* Play Video Button Overlay */}
               <button
                 onClick={() => setIsPlayingVideo(true)}
-                className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-white/90 text-[#8B4513] hover:bg-[#8B4513] hover:text-white flex items-center justify-center shadow-xl transition-all duration-300 transform hover:scale-110 cursor-pointer group-hover:bg-[#8B4513] group-hover:text-white"
+                className="absolute inset-0 m-auto w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/90 text-[#8B4513] hover:bg-[#8B4513] hover:text-white flex items-center justify-center shadow-xl transition-all duration-300 transform hover:scale-110 cursor-pointer group-hover:bg-[#8B4513] group-hover:text-white"
                 title="Xem Video Chế Tác Laser"
               >
-                <Play className="w-7 h-7 fill-current ml-1" />
+                <Play className="w-5 h-5 sm:w-7 sm:h-7 fill-current ml-0.5 sm:ml-1" />
               </button>
 
-              <div className="absolute top-4 left-4 bg-[#5A5A40] text-white px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm">
+              <div className="absolute top-3 left-3 bg-[#5A5A40] text-white px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-xs">
                 {product.badge || 'Tác Phẩm Gỗ Laser'}
               </div>
 
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                <div className="bg-white/90 backdrop-blur-xs px-3.5 py-1.5 rounded-2xl shadow-md flex items-center gap-2 border border-[#EAE7E2]">
-                  <span className="text-xl">{product.emoji}</span>
-                  <span className="text-xs font-bold text-[#2D2926]">Khắc Theo Yêu Cầu</span>
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <div className="bg-white/90 backdrop-blur-xs px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-xs flex items-center gap-1.5 sm:gap-2 border border-[#EAE7E2]">
+                  <span className="text-base sm:text-xl">{product.emoji}</span>
+                  <span className="text-[10px] sm:text-xs font-bold text-[#2D2926]">Khắc Theo Yêu Cầu</span>
                 </div>
 
                 <button
                   onClick={() => setIsPlayingVideo(true)}
-                  className="bg-black/70 hover:bg-black text-white px-3 py-1.5 rounded-2xl text-[11px] font-bold flex items-center gap-1.5 backdrop-blur-xs transition-all cursor-pointer shadow-md"
+                  className="bg-black/70 hover:bg-black text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold flex items-center gap-1 sm:gap-1.5 backdrop-blur-xs transition-all cursor-pointer shadow-xs"
                 >
-                  <Film className="w-3.5 h-3.5 text-[#8B4513]" />
+                  <Film className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#8B4513]" />
                   <span>Xem Video</span>
                 </button>
               </div>
@@ -183,12 +183,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </div>
 
         {/* Right column: Details & Ordering */}
-        <div className="md:w-1/2 p-6 sm:p-8 overflow-y-auto flex flex-col justify-between space-y-6">
+        <div className="md:w-1/2 p-4 sm:p-6 md:p-8 overflow-y-auto flex flex-col justify-between space-y-4 sm:space-y-6">
           <div>
             {/* Rating */}
             <div className="flex items-center justify-between text-xs text-[#6B665E] mb-2">
               <span className="inline-flex items-center gap-1 font-semibold text-[#8B4513] uppercase text-[11px] tracking-wider">
-                ✨ Ngộ Premium
+                ✨ Mộc Điêu Premium
               </span>
               <div className="flex items-center gap-1 text-[#8B4513] font-bold">
                 <Star className="w-4 h-4 fill-current" />
